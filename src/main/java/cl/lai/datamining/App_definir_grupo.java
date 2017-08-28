@@ -18,7 +18,7 @@ public class App_definir_grupo
     	HashMap<String, String> tipoProducto = new HashMap<String, String>();
     	BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File("/Users/chunhaulai/Documents/workspace/lai-datamining-app/src/resources/nombre_producto.csv"))));
     	PrintWriter writer = new PrintWriter(new File("/Users/chunhaulai/Documents/workspace/lai-datamining-app/src/resources/nombre_producto_grupo.csv"));
-    	writer.print("producto;fecha;codigo_gurpo;grupo");
+    	writer.println("producto;fecha;codigo_gurpo;grupo");
     	String aux = reader.readLine();
     	while((aux=reader.readLine())!=null){
     		String arrays[] = aux.replaceAll("\"", "").split(",");
