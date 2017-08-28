@@ -38,8 +38,14 @@ public class App_listar_reglas_asociacion
     		String grupos[] = aux.split(";");
     		if(count==0){
     			attributes = new ArrayList<Attribute>(grupos.length-1);
+    			
+    			ArrayList<String> my_nominal_fechas = new ArrayList<String>(12); 
+    			for(int i=1;i<=12;i++)
+    				my_nominal_fechas.add(String.valueOf(i));  
+     	        Attribute attrMes = new Attribute("mes",my_nominal_fechas);
+     	        attributes.add(attrMes);
         		for(int i=1;i<grupos.length;i++){
-        			ArrayList<String> my_nominal_values = new ArrayList<String>(3); 
+        			ArrayList<String> my_nominal_values = new ArrayList<String>(1); 
         	        my_nominal_values.add("1");  
          	        Attribute attr = new Attribute(grupos[i],my_nominal_values);
         			attributes.add(attr);
@@ -47,11 +53,15 @@ public class App_listar_reglas_asociacion
         		ventas = new Instances("ventas", attributes, 0);
     		}else{
     			DenseInstance inst = new DenseInstance(attributes.size());
+    			//seteo del mes para el atributo 0
+    			//System.out.println(grupos[0].split("/")[1]);
+    			inst.setValue(attributes.get(0),String.valueOf(Integer.parseInt(grupos[0].split("/")[1])) );
+    			//seteo del resto de los atributos
     			for(int i=1;i<grupos.length;i++){
     				if( ("0".equalsIgnoreCase(grupos[i]) )){
-    					inst.setMissing(attributes.get(i-1));
+    					inst.setMissing(attributes.get(i ));
     				}else
-    					inst.setValue(attributes.get(i-1),"1" );
+    					inst.setValue(attributes.get(i ),"1" );
         		}
     			ventas.add(inst);
     		}
@@ -61,7 +71,7 @@ public class App_listar_reglas_asociacion
     	 
     	Apriori aprioriObj = new Apriori();
     	try {
-    		String []options =  {"-C","0.6"};
+    		String []options =  {"-C","0.7","-N","20"};
     		aprioriObj.setOptions(options);
     		aprioriObj.buildAssociations(ventas);
     	} catch (Exception e) {
