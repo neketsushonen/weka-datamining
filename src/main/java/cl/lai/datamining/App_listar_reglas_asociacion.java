@@ -61,7 +61,8 @@ public class App_listar_reglas_asociacion
     	 
     	Apriori aprioriObj = new Apriori();
     	try {
-     
+    		String []options =  {"-C","0.9"};
+    		aprioriObj.setOptions(options);
     		aprioriObj.buildAssociations(ventas);
     	} catch (Exception e) {
     		e.printStackTrace();
