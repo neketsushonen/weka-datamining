@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 /**
  * Hello world!
@@ -25,21 +26,20 @@ public class App_listar_transacciones
     	PrintWriter writer = new PrintWriter(new File("/Users/chunhaulai/Documents/workspace/lai-datamining-app/src/resources/listar_producto_grupo_fecha.csv"));
     	 
     	String aux = reader.readLine();
-    	HashSet<String> grupos = new HashSet<String>();
+    	TreeSet<String> grupos = new TreeSet<String>();
     	TreeMap<String, HashSet<String>> fechas_grupo = new TreeMap<String, HashSet<String>>();
     	while((aux=reader.readLine())!=null){
     		String fecha = aux.split(";")[1];
     		String fechaFormato[] = fecha.split("/");
-    		String fechaFormateada = fechaFormato[2]+"/"+fechaFormato[1]+"/"+fechaFormato[0];
-    		String producto_grupo  = aux.split(";")[3];
-    		grupos.add(producto_grupo);
-    		boolean fecha_existe = fechas_grupo.containsKey(fechaFormateada);
-    		if(fecha_existe==false)
-    			fechas_grupo.put(fechaFormateada, new HashSet<String>());
-    		fechas_grupo.get(fechaFormateada).add(producto_grupo);
+     		String producto_grupo  = aux.split(";")[3];
+    		grupos.add(fechaFormato[1]); //por cada grupo del producto, se le asigna el mes
+    		boolean grupo_existe = fechas_grupo.containsKey(producto_grupo);
+    		if(grupo_existe==false)
+    			fechas_grupo.put(producto_grupo, new HashSet<String>());
+    		fechas_grupo.get(producto_grupo).add(fechaFormato[1]);
     	}
     	StringBuffer buffer = new StringBuffer();
-    	buffer.append("fecha");
+    	buffer.append("grupo");
     	for(String grupo: grupos){
     		buffer.append(";").append(grupo);
     	}
@@ -48,11 +48,11 @@ public class App_listar_transacciones
     	
     	for(Map.Entry<String, HashSet<String>> entry:fechas_grupo.entrySet()){
     		buffer = new StringBuffer();
-    		String fecha = entry.getKey();
+    		String grupo = entry.getKey();
     		HashSet<String> grupos_asociado_alafecha = entry.getValue();
-    		buffer.append(entry.getKey());
-    		for(String grupo: grupos){
-        		 if(grupos_asociado_alafecha.contains(grupo)){
+    		buffer.append(grupo);
+    		for(String fecha: grupos){
+        		 if(grupos_asociado_alafecha.contains(fecha)){
         			 buffer.append(";").append(1);
         		 }else{
         			 buffer.append(";").append(0);

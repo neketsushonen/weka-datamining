@@ -29,25 +29,31 @@ public class App_listar_reglas_asociacion
     public static void main( String[] args ) throws IOException{
     	HashMap<String, String> tipoProducto = new HashMap<String, String>();
     	BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File("/Users/chunhaulai/Documents/workspace/lai-datamining-app/src/resources/listar_producto_grupo_fecha.csv"))));
-    	 
+    	BufferedReader readerSoloGrupos = new BufferedReader(new InputStreamReader(new FileInputStream(new File("/Users/chunhaulai/Documents/workspace/lai-datamining-app/src/resources/listar_producto_grupo_fecha.csv"))));
+   	 
     	String aux = null;
     	Instances ventas = null;
     	ArrayList<Attribute> attributes = null;
     	int count = 0;
-    	 while((aux=reader.readLine())!=null){
+    	HashSet<String> gruposExistentes = new HashSet<>();
+    	aux=readerSoloGrupos.readLine();
+    	ArrayList<String> my_nominal_grupos = new ArrayList<String>(12); 
+    	while((aux=readerSoloGrupos.readLine())!=null){
     		String grupos[] = aux.split(";");
+    		for(String g: grupos)
+    			if(!"0".equalsIgnoreCase(g))
+    				gruposExistentes.add(g);
+    		
+    	}
+    	my_nominal_grupos.addAll(gruposExistentes);	
+     	 
+    	 while((aux=reader.readLine())!=null){
+     		String grupos[] = aux.split(";");
     		if(count==0){
     			attributes = new ArrayList<Attribute>(grupos.length-1);
-    			
-    			ArrayList<String> my_nominal_fechas = new ArrayList<String>(12); 
-    			for(int i=1;i<=12;i++)
-    				my_nominal_fechas.add(String.valueOf(i));  
-     	        Attribute attrMes = new Attribute("mes",my_nominal_fechas);
-     	        attributes.add(attrMes);
+    			 
         		for(int i=1;i<grupos.length;i++){
-        			ArrayList<String> my_nominal_values = new ArrayList<String>(1); 
-        	        my_nominal_values.add("1");  
-         	        Attribute attr = new Attribute(grupos[i],my_nominal_values);
+        			Attribute attr = new Attribute(grupos[i],my_nominal_grupos);
         			attributes.add(attr);
         		}
         		ventas = new Instances("ventas", attributes, 0);
@@ -55,23 +61,21 @@ public class App_listar_reglas_asociacion
     			DenseInstance inst = new DenseInstance(attributes.size());
     			//seteo del mes para el atributo 0
     			//System.out.println(grupos[0].split("/")[1]);
-    			inst.setValue(attributes.get(0),String.valueOf(Integer.parseInt(grupos[0].split("/")[1])) );
-    			//seteo del resto de los atributos
+     			//seteo del resto de los atributos
     			for(int i=1;i<grupos.length;i++){
     				if( ("0".equalsIgnoreCase(grupos[i]) )){
-    					inst.setMissing(attributes.get(i ));
+    					inst.setMissing(attributes.get(i-1 ));
     				}else
-    					inst.setValue(attributes.get(i ),"1" );
+    					inst.setValue(attributes.get(i-1 ),grupos[i]);
         		}
     			ventas.add(inst);
     		}
     		count++;
     		 
     	}
-    	 
-    	Apriori aprioriObj = new Apriori();
+     	Apriori aprioriObj = new Apriori();
     	try {
-    		String []options =  {"-C","0.7","-N","20"};
+    		String []options =  {"-C","0.9"};
     		aprioriObj.setOptions(options);
     		aprioriObj.buildAssociations(ventas);
     	} catch (Exception e) {
