@@ -52,6 +52,24 @@ public class App_listar_reglas_asociacion_dpto
      		}else{
     			int columna =0;
      			for(String g: grupos){
+     				if(columna==1){
+     					Integer precio = Integer.parseInt(g);
+     					if(precio < 500){
+     						my_nominal_grupos.get(columna).add(" < 500 U.F.");
+     					}else if(precio < 1000)
+     						my_nominal_grupos.get(columna).add(" 501 - 1000 U.F.");
+     					else if(precio < 1500)
+     						my_nominal_grupos.get(columna).add(" 1001 - 1500 U.F.");
+     					else if(precio < 2000) 
+     						my_nominal_grupos.get(columna).add(" 1501 - 2000 U.F.");
+     					else if(precio < 3000) 
+     						my_nominal_grupos.get(columna).add(" 2001 - 3000 U.F.");
+     					else  if(precio < 4000) 
+     						my_nominal_grupos.get(columna).add(" 3001 - 4000 U.F.");
+     					else 
+     						my_nominal_grupos.get(columna).add(" > 4000 U.F.");
+     					
+     				}else 
      				my_nominal_grupos.get(columna).add(g);
     				columna++;
     			}
@@ -76,9 +94,23 @@ public class App_listar_reglas_asociacion_dpto
     			for(int i=1;i<grupos.length;i++){
     				if( (">400".equalsIgnoreCase(grupos[i]) )){
     					inst.setMissing(attributes.get(i-1 ));
-    				}else
-    			//	System.out.println(attributes.get(i-1 ));
-    				//System.out.println(grupos[i]);
+    				}else if(i==1){
+    					Integer precio = Integer.parseInt(grupos[i]);
+     					if(precio < 500){
+     						inst.setValue(attributes.get(i-1 )," < 500 U.F.");
+     					}else if(precio < 1000)
+     						inst.setValue(attributes.get(i-1 )," 501 - 1000 U.F.");
+     					else if(precio < 1500)
+     						inst.setValue(attributes.get(i-1 )," 1001 - 1500 U.F.");
+     					else if(precio < 2000) 
+     						inst.setValue(attributes.get(i-1 )," 1501 - 2000 U.F.");
+     					else if(precio < 3000) 
+     						inst.setValue(attributes.get(i-1 )," 2001 - 3000 U.F.");
+     					else if(precio < 4000) 	
+     						inst.setValue(attributes.get(i-1 )," 3001 - 4000 U.F.");
+     					else 
+     						inst.setValue(attributes.get(i-1 )," > 4000 U.F.");
+     				}else 
     					inst.setValue(attributes.get(i-1 ),grupos[i]);
         		}
     			dptos.add(inst);
@@ -89,7 +121,7 @@ public class App_listar_reglas_asociacion_dpto
      	Apriori aprioriObj = new Apriori();
     	try {
     		//minimo soporte 0.1, minima confianza 0.5, cantidad de reglas: 30
-    		String []options =  {"-C","0.5","-N","30","-M","0.1"};
+    		String []options =  {"-C","0.5","-N","30","-M","0.05"};
     		aprioriObj.setOptions(options);
     		aprioriObj.buildAssociations(dptos);
     	} catch (Exception e) {
