@@ -74,9 +74,9 @@ public class App_listar_reglas_asociacion_dpto
     			//System.out.println(grupos[0].split("/")[1]);
      			//seteo del resto de los atributos
     			for(int i=1;i<grupos.length;i++){
-    				//if( ("0".equalsIgnoreCase(grupos[i]) )){
-    					//inst.setMissing(attributes.get(i-1 ));
-    				//}else
+    				if( (">400".equalsIgnoreCase(grupos[i]) )){
+    					inst.setMissing(attributes.get(i-1 ));
+    				}else
     			//	System.out.println(attributes.get(i-1 ));
     				//System.out.println(grupos[i]);
     					inst.setValue(attributes.get(i-1 ),grupos[i]);
@@ -88,7 +88,8 @@ public class App_listar_reglas_asociacion_dpto
     	}
      	Apriori aprioriObj = new Apriori();
     	try {
-    		String []options =  {"-C","0.9","-N","30"};
+    		//minimo soporte 0.1, minima confianza 0.5, cantidad de reglas: 30
+    		String []options =  {"-C","0.5","-N","30","-M","0.1"};
     		aprioriObj.setOptions(options);
     		aprioriObj.buildAssociations(dptos);
     	} catch (Exception e) {
